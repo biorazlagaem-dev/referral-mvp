@@ -1,0 +1,9 @@
+[
+  {
+    "id": "company_1",
+    "name": "Example Company",
+    "slug": "example-company",
+    "description": "Demo company for seeding",
+    "ownerId": "user_1"
+  }
+]

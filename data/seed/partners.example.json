@@ -1,0 +1,9 @@
+[
+  {
+    "id": "partner_1",
+    "name": "Example Partner",
+    "email": "partner@example.com",
+    "referralCode": "EX-REF-001",
+    "companyId": "company_1"
+  }
+]
