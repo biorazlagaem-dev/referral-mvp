@@ -1,0 +1,42 @@
+<!-- src/frontend/templates/index.html -->
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ReferralMVP — Главная</title>
+  <!-- Подключаем AUI глобально (на случай, если компонент использует стили) -->
+  <link rel="stylesheet" href="https://aui-cdn.atlassian.com/aui-adg/9.0.0/css/aui.css">
+  <link rel="stylesheet" href="/public/css/app.css">
+</head>
+<body>
+  <!-- Контейнер, куда подгрузим отдельный header -->
+  <div id="header-root"></div>
+
+  <!-- Основной контент страницы (пока пусто — только хедер по задаче) -->
+  <main id="main-content" style="padding:24px;">
+    <!-- Здесь будет продающий контент позже -->
+    <h1>Продающая главная — заглушка</h1>
+    <p>Контент добавим позже по команде.</p>
+  </main>
+
+  <script>
+    // Простая функция для загрузки внешнего HTML-файла в контейнер (#header-root)
+    (function loadHeader(){
+      fetch('/src/frontend/components/header.html')
+        .then(function(resp){
+          if(!resp.ok) throw new Error('Не удалось загрузить header: ' + resp.status);
+          return resp.text();
+        })
+        .then(function(html){
+          document.getElementById('header-root').innerHTML = html;
+        })
+        .catch(function(err){
+          console.error(err);
+          // fallback: минимальный header на случай ошибки загрузки
+          document.getElementById('header-root').innerHTML = '<header style="padding:12px 20px;display:flex;justify-content:space-between;align-items:center;"><a href="/">ReferralMVP</a><nav><a href=\"/guide\">Гайд</a> — <a href=\"/pricing\">Цены</a> — <a href=\"/login\">Войти</a></nav></header>';
+        });
+    })();
+  </script>
+</body>
+</html>
