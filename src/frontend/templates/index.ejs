@@ -1,41 +1,34 @@
-<!-- index.ejs -->
 <!doctype html>
 <html lang="ru">
-  <head>
-    <!-- HEAD partial (meta и стили) -->
-    <%- include('partials/head') %>
-  </head>
-  <body>
-    <!-- HEADER partial (серверный include) -->
-    <%- include('partials/header') %>
+<head>
+  <!-- HEAD partial (meta и стили) -->
+  <%- include('partials/head') %>
+</head>
+<body>
+  <!-- HEADER partial (серверный include) -->
+  <%- include('components/header') %>
 
-    <!-- MAIN content (логический блок страницы) -->
-    <main class="rmvp-main" role="main">
-      <section class="rmvp-hero">
-        <div class="container rmvp-hero__inner">
-          <div class="rmvp-hero__content">
-            <h1 class="rmvp-hero__title">ReferralMVP — простая реферальная система</h1>
-            <p class="rmvp-hero__lead">Создавайте продающие страницы для компаний, подключайте партнёров и отслеживайте рефералы — всё в одном интерфейсе.</p>
-            <div class="rmvp-hero__ctas">
-              <a href="/pricing" class="aui-button aui-button-primary rmvp-cta">Попробовать бесплатно</a>
-              <a href="/guide" class="aui-button aui-button-link rmvp-cta rmvp-cta--muted">Узнать как</a>
-            </div>
-          </div>
-
-          <aside class="rmvp-hero__preview" aria-hidden="true">
-            <div class="rmvp-preview-card">
-              <strong>Превью компании</strong>
-              <p>Краткое описание превью продающей страницы компании.</p>
-            </div>
-          </aside>
+  <!-- MAIN: продающий блок (логический блок main/hero) -->
+  <main id="main-content">
+    <section class="hero">
+      <div class="container hero-inner">
+        <div>
+          <h1><%= heading || 'ReferralMVP — простая реферальная программа для вашего продукта' %></h1>
+          <p class="lead"><%= lead || 'Запустите реферальную страницу для каждой компании за минуты. Привлекайте клиентов через партнёров и отслеживайте рефералы в одном месте.' %></p>
+          <p>
+            <a href="/pricing" class="aui-button aui-button-primary btn-cta">Попробовать бесплатно</a>
+            <a href="/guide" class="aui-button aui-button-link btn-cta" style="margin-left:10px;">Узнать как</a>
+          </p>
         </div>
-      </section>
-    </main>
 
-    <!-- FOOTER partial -->
-    <%- include('partials/footer') %>
+        <aside class="preview-card">
+          <strong>Превью компании</strong>
+          <p style="margin-top:8px;color:#566b75;font-size:14px;">Карточка превью продающей страницы компании (здесь будет реальный preview).</p>
+        </aside>
+      </div>
+    </section>
+  </main>
 
-    <!-- SCRIPTS partial -->
-    <%- include('partials/scripts') %>
-  </body>
+
+</body>
 </html>

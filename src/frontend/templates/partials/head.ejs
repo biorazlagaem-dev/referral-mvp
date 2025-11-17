@@ -1,15 +1,22 @@
-<!-- partials/head.ejs -->
-<!-- Логические блоки: meta / aui / app-styles -->
+<!-- src/frontend/templates/partials/head.ejs -->
+<!-- HEAD partial: логические блоки  -->
+<!--1) Meta: charset, viewport, title, description, social meta  -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title><%= title || 'ReferralMVP' %></title>
-<meta name="description" content="<%= description || 'Простая реферальная программа для вашего продукта' %>">
+<meta name="description" content="<%= typeof description !== 'undefined' ? description : 'Простая реферальная программа для вашего продукта' %>">
 
+<!-- Open Graph (простые значения, можно расширить) -->
+<meta property="og:title" content="<%= title || 'ReferralMVP' %>">
+<meta property="og:description" content="<%= typeof description !== 'undefined' ? description : 'Простая реферальная программа для вашего продукта' %>">
+<meta property="og:type" content="website">
+
+<!-- 2) Styles: AUI + local styles -->
 <!-- AUI (Atlassian UI) CDN -->
 <link rel="stylesheet" href="https://aui-cdn.atlassian.com/aui-adg/9.0.0/css/aui.css">
+<link rel="stylesheet" href="/public/css/app.css">
 
-<!-- Модульные стили (в порядке: base -> blocks -> utils) -->
-<link rel="stylesheet" href="/public/css/utils/base.css">
-<link rel="stylesheet" href="/public/css/blocks/header.css">
-<link rel="stylesheet" href="/public/css/blocks/hero.css">
-<link rel="stylesheet" href="/public/css/blocks/buttons.css">
+<!-- 3) Optional head scripts or preload (оставлено пустым для расширения) -->
+<% if (typeof headScripts !== 'undefined') { %>
+  <%- headScripts %>
+<% } %>
