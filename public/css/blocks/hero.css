@@ -1,0 +1,44 @@
+/* public/css/blocks/hero.css
+   Логические блоки: hero wrapper / content / preview / responsiveness
+*/
+.rmvp-hero {
+  padding: 56px 0;
+  background: linear-gradient(180deg, #f9fbfc 0%, #ffffff 100%);
+}
+
+.rmvp-hero__inner {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 32px;
+  align-items: center;
+}
+
+.rmvp-hero__title {
+  font-size: 36px;
+  line-height: 1.06;
+  margin-bottom: 12px;
+}
+
+.rmvp-hero__lead {
+  color: var(--rmvp-color-muted);
+  font-size: 18px;
+  margin-bottom: 18px;
+}
+
+.rmvp-hero__ctas { display:flex; gap:12px; }
+
+.rmvp-preview-card {
+  border: 1px solid rgba(16,22,26,0.06);
+  padding: 18px;
+  border-radius: var(--rmvp-radius);
+  background: #fff;
+  box-shadow: 0 6px 20px rgba(16,22,26,0.04);
+}
+
+/* Responsive: stack columns */
+@media (max-width: 900px) {
+  .rmvp-hero__inner {
+    grid-template-columns: 1fr;
+  }
+  .rmvp-preview-card { margin-top: 12px; }
+}

@@ -1,0 +1,55 @@
+/* public/css/blocks/header.css
+   Логические блоки: root / brand / nav / responsive
+*/
+
+/* Root */
+.rmvp-header {
+  background: #fff;
+  border-bottom: 1px solid rgba(16,22,26,0.06);
+}
+
+/* Inner wrapper */
+.rmvp-header__inner {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 12px 0;
+}
+
+/* Brand */
+.rmvp-logo {
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 8px 14px;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+/* Navigation */
+.rmvp-nav__list {
+  display:flex;
+  gap: 8px;
+  align-items:center;
+  margin: 0;
+  padding: 0;
+  list-style:none;
+}
+
+.rmvp-nav__item a {
+  padding: 6px 10px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+/* Login button emphasis */
+.rmvp-login-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+/* Mobile: collapse nav to a compact layout (future: add hamburger) */
+@media (max-width: 640px) {
+  .rmvp-header__inner { gap: 12px; }
+  .rmvp-nav__list { gap: 6px; }
+  .rmvp-logo { padding: 6px 10px; font-size:0.95rem;}
+}

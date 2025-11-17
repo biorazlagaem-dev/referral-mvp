@@ -1,16 +1,18 @@
 <!-- src/frontend/templates/components/header.ejs -->
-<header class="aui-page-header" role="banner" style="padding:12px 20px;display:flex;align-items:center;justify-content:space-between;">
-  <div style="display:flex;align-items:center;gap:12px;">
-    <a href="/" class="aui-button aui-button-primary" style="font-weight:600; text-decoration:none;">
-      ReferralMVP
-    </a>
-  </div>
+<header class="aui-page-header" role="banner">
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <!-- Левый бренд/кнопка -->
+      <a href="/" class="logo header-brand-btn aui-button aui-button-primary" style="text-decoration:none;">
+        ReferralMVP
+      </a>
+    </div>
 
-  <nav aria-label="Главная навигация">
-    <ul class="aui-nav aui-nav-horizontal" style="margin:0; padding:0; list-style:none; display:flex; gap:16px; align-items:center;">
-      <li><a href="/guide" class="aui-button aui-button-link">Гайд</a></li>
-      <li><a href="/pricing" class="aui-button aui-button-link">Цены</a></li>
-      <li><a href="/login" class="aui-button aui-button-secondary">Войти</a></li>
-    </ul>
-  </nav>
+    <!-- Правая навигация -->
+    <nav class="header-nav" aria-label="Главная навигация">
+      <a href="/guide" class="aui-button aui-button-link">Гайд</a>
+      <a href="/pricing" class="aui-button aui-button-link">Цены</a>
+      <a href="/login" class="aui-button aui-button-secondary login-btn">Войти</a>
+    </nav>
+  </div>
 </header>

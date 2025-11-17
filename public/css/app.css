@@ -1,0 +1,120 @@
+/* public/css/app.css
+   Базовые переработанные стили для хедера и главной страницы.
+   Работают вместе с AUI (подключается через CDN в шаблонах).
+*/
+
+/* Общие контейнеры */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Хедер: улучшенная верстка и поведение */
+.aui-page-header {
+  background: #ffffff;
+  border-bottom: 1px solid rgba(16,22,26,0.06);
+  box-shadow: 0 1px 0 rgba(16,22,26,0.03);
+}
+
+.aui-page-header .logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Стили для кнопки-логотипа */
+.header-brand-btn {
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 8px 14px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Навигация справа */
+.header-nav {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Link style: переиспользуем стили AUI, но обеспечим плотность */
+.header-nav .aui-button-link {
+  padding: 6px 10px;
+  font-weight: 500;
+}
+
+/* Primary login button slightly more visible */
+.header-nav .login-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+/* Hero / продающий блок */
+.hero {
+  padding: 56px 0;
+  background: linear-gradient(180deg, #f9fbfc 0%, #ffffff 100%);
+  color: #0b2838;
+}
+
+.hero .hero-inner {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 32px;
+  align-items: center;
+}
+
+.hero h1 {
+  font-size: 36px;
+  line-height: 1.08;
+  margin: 0 0 16px 0;
+  letter-spacing: -0.02em;
+}
+
+.hero p.lead {
+  font-size: 18px;
+  margin: 0 0 20px 0;
+  color: #425563;
+}
+
+/* CTA */
+.btn-cta {
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* Карточка справа (preview) */
+.preview-card {
+  border: 1px solid rgba(16,22,26,0.06);
+  padding: 20px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 6px 20px rgba(16,22,26,0.04);
+}
+
+/* Отзывчивость */
+@media (max-width: 900px) {
+  .hero .hero-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .header-nav {
+    gap: 8px;
+  }
+}
+
+/* Небольшие улучшения типографики */
+body {
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #102b3a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

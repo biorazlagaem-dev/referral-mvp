@@ -12,10 +12,9 @@ app.set('view engine', 'ejs');
 // Статика (css/js/assets)
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
-// Главная страница
-app.get('/', (req, res) => {
-  res.render('index');
-});
+// Подключаем публичные роуты (вынесены в отдельный файл)
+const publicRoutes = require('./src/backend/routes/publicRoutes');
+app.use('/', publicRoutes);
 
 // Быстрый запуск
 app.listen(PORT, () => {

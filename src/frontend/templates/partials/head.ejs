@@ -1,0 +1,15 @@
+<!-- partials/head.ejs -->
+<!-- Логические блоки: meta / aui / app-styles -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title><%= title || 'ReferralMVP' %></title>
+<meta name="description" content="<%= description || 'Простая реферальная программа для вашего продукта' %>">
+
+<!-- AUI (Atlassian UI) CDN -->
+<link rel="stylesheet" href="https://aui-cdn.atlassian.com/aui-adg/9.0.0/css/aui.css">
+
+<!-- Модульные стили (в порядке: base -> blocks -> utils) -->
+<link rel="stylesheet" href="/public/css/utils/base.css">
+<link rel="stylesheet" href="/public/css/blocks/header.css">
+<link rel="stylesheet" href="/public/css/blocks/hero.css">
+<link rel="stylesheet" href="/public/css/blocks/buttons.css">

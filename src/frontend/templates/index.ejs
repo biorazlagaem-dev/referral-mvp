@@ -1,20 +1,41 @@
+<!-- index.ejs -->
 <!doctype html>
 <html lang="ru">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ReferralMVP — Главная</title>
-  <!-- AUI CDN -->
-  <link rel="stylesheet" href="https://aui-cdn.atlassian.com/aui-adg/9.0.0/css/aui.css">
-  <link rel="stylesheet" href="/public/css/app.css">
-</head>
-<body>
-  <!-- Server-side include хедера -->
-  <%- include('components/header') %>
+  <head>
+    <!-- HEAD partial (meta и стили) -->
+    <%- include('partials/head') %>
+  </head>
+  <body>
+    <!-- HEADER partial (серверный include) -->
+    <%- include('partials/header') %>
 
-  <main id="main-content" style="padding:24px;">
-    <h1>Продающая главная — заглушка</h1>
-    <p>Контент добавим позже по команде.</p>
-  </main>
-</body>
+    <!-- MAIN content (логический блок страницы) -->
+    <main class="rmvp-main" role="main">
+      <section class="rmvp-hero">
+        <div class="container rmvp-hero__inner">
+          <div class="rmvp-hero__content">
+            <h1 class="rmvp-hero__title">ReferralMVP — простая реферальная система</h1>
+            <p class="rmvp-hero__lead">Создавайте продающие страницы для компаний, подключайте партнёров и отслеживайте рефералы — всё в одном интерфейсе.</p>
+            <div class="rmvp-hero__ctas">
+              <a href="/pricing" class="aui-button aui-button-primary rmvp-cta">Попробовать бесплатно</a>
+              <a href="/guide" class="aui-button aui-button-link rmvp-cta rmvp-cta--muted">Узнать как</a>
+            </div>
+          </div>
+
+          <aside class="rmvp-hero__preview" aria-hidden="true">
+            <div class="rmvp-preview-card">
+              <strong>Превью компании</strong>
+              <p>Краткое описание превью продающей страницы компании.</p>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER partial -->
+    <%- include('partials/footer') %>
+
+    <!-- SCRIPTS partial -->
+    <%- include('partials/scripts') %>
+  </body>
 </html>
