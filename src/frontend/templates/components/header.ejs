@@ -1,34 +1,54 @@
-<!-- src/frontend/templates/components/header.ejs
-     Логическая декомпозиция:
-     1) Brand (левый блок) - логотип + название
-     2) Primary Nav (центр) - Гайд
-     3) Actions (право) - Цены, Войти (CTA)
-     Используем EJS-комментарии, НЕ HTML-комментарии
--->
+<!-- src/frontend/templates/components/header.ejs -->
+<!-- Улучшенный Header (markup) - только этот файл изменён -->
+<header class="app-header" role="banner" aria-label="Главная шапка сайта">
+  <div class="container header-inner" style="display:flex;align-items:center;justify-content:space-between;gap:16px;">
+    <!-- Логотип / бренд (с эмблемой) -->
+    <a href="/" class="logo header-brand-btn" aria-label="ReferralMVP — главная">
+      <!-- эмблема: простой SVG круглый значок -->
+      <span class="logo-mark" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
+          <defs>
+            <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0%" stop-color="#0052CC" />
+              <stop offset="100%" stop-color="#2684FF" />
+            </linearGradient>
+          </defs>
+          <rect rx="6" width="28" height="28" fill="url(#g1)"></rect>
+          <text x="50%" y="54%" text-anchor="middle" fill="#fff" font-family="Segoe UI, Roboto, Arial" font-size="14" font-weight="700">R</text>
+        </svg>
+      </span>
+      <span class="logo-text">ReferralMVP</span>
+    </a>
 
-<header class="site-header" role="banner" aria-label="Главная шапка">
-  <div class="container header-inner">
-    <!-- 1) BRAND -->
-    <div class="header-brand">
-      <a href="/" class="brand-link" aria-label="Перейти на главную">
-        <!-- можно положить svg в public/assets/logo.svg -->
-        <img src="/public/assets/logo.svg" alt="ReferralMVP" class="brand-logo" onerror="this.style.display='none'">
-        <span class="brand-name">ReferralMVP</span>
-      </a>
-    </div>
+    <!-- Мобильное меню (кнопка) -->
+    <button class="menu-toggle aui-button aui-button-link" aria-expanded="false" aria-controls="header-navigation" id="header-menu-toggle" title="Открыть меню">
+      <span class="aui-icon aui-icon-small aui-iconfont-nav">{{menu}}</span>
+      <span class="visually-hidden">Меню</span>
+    </button>
 
-    <!-- 2) PRIMARY NAV -->
-    <nav class="header-nav" aria-label="Основная навигация">
-      <ul class="nav-list">
-        <li class="nav-item"><a href="/guide" class="nav-link">Гайд</a></li>
-        <li class="nav-item"><a href="/pricing" class="nav-link">Цены</a></li>
+    <!-- Навигация -->
+    <nav id="header-navigation" class="header-nav" aria-label="Основная навигация">
+      <ul class="nav-list" role="menubar" aria-hidden="false">
+        <li role="none"><a role="menuitem" href="/guide" class="nav-link">Гайд</a></li>
+        <li role="none"><a role="menuitem" href="/pricing" class="nav-link">Цены</a></li>
+        <li role="none"><a role="menuitem" href="/login" class="nav-link login-link aui-button aui-button-primary">Войти</a></li>
       </ul>
     </nav>
-
-    <!-- 3) ACTIONS -->
-    <div class="header-actions" aria-hidden="false">
-      <a href="/docs" class="aui-button aui-button-link header-action-docs">Документация</a>
-      <a href="/login" class="aui-button aui-button-secondary header-action-login">Войти</a>
-    </div>
   </div>
 </header>
+
+<!-- Лёгкий inline-скрипт для переключения моб. меню (только для хедера) -->
+<script>
+  (function() {
+    const btn = document.getElementById('header-menu-toggle');
+    const nav = document.getElementById('header-navigation');
+
+    if (!btn || !nav) return;
+
+    btn.addEventListener('click', function() {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!expanded));
+      nav.classList.toggle('open', !expanded);
+    });
+  })();
+</script>
