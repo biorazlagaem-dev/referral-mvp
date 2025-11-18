@@ -1,0 +1,80 @@
+<!-- src/frontend/templates/partials/registerForm.ejs -->
+<!-- Partial: регистрационная форма (логические блоки: selector, inputs, actions, script) -->
+
+<section class="signup-section">
+  <form id="lead-form" action="/register-check" method="post" novalidate>
+    <!-- Selector: Email / Phone -->
+    <div class="form-row form-toggle" role="radiogroup" aria-label="Выберите способ контакта">
+      <label><input type="radio" name="contactType" value="email" checked> Email</label>
+      <label><input type="radio" name="contactType" value="phone"> Телефон</label>
+    </div>
+
+    <!-- Inputs: оба в форме, но показываем только выбранный -->
+    <div class="form-row field-email">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" />
+    </div>
+
+    <div class="form-row field-phone" style="display:none;">
+      <label for="phone">Телефон</label>
+      <input id="phone" name="phone" type="tel" placeholder="+7 912 345 67 89" autocomplete="tel" />
+    </div>
+
+    <div class="form-row">
+      <button type="submit" class="aui-button aui-button-primary">Получить доступ</button>
+      <span class="form-note" id="form-note" aria-live="polite"></span>
+    </div>
+  </form>
+</section>
+
+<!-- Client-side behaviour: переключение полей и простая проверка перед отправкой -->
+<script>
+(function(){
+  const form = document.getElementById('lead-form');
+  const radios = Array.from(document.querySelectorAll('input[name="contactType"]'));
+  const emailRow = document.querySelector('.field-email');
+  const phoneRow = document.querySelector('.field-phone');
+  const emailInput = document.getElementById('email');
+  const phoneInput = document.getElementById('phone');
+  const note = document.getElementById('form-note');
+
+  function updateVisibility() {
+    const val = document.querySelector('input[name="contactType"]:checked').value;
+    if (val === 'email') {
+      emailRow.style.display = '';
+      phoneRow.style.display = 'none';
+      phoneInput.value = '';
+    } else {
+      emailRow.style.display = 'none';
+      phoneRow.style.display = '';
+      emailInput.value = '';
+    }
+    note.textContent = '';
+  }
+
+  radios.forEach(r => r.addEventListener('change', updateVisibility));
+
+  form.addEventListener('submit', function(e){
+    const contactType = document.querySelector('input[name="contactType"]:checked').value;
+    if (contactType === 'email') {
+      if (!emailInput.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
+        e.preventDefault();
+        note.textContent = 'Введите корректный email';
+        emailInput.focus();
+        return;
+      }
+    } else {
+      if (!phoneInput.value || phoneInput.value.trim().length < 7) {
+        e.preventDefault();
+        note.textContent = 'Введите корректный телефон';
+        phoneInput.focus();
+        return;
+      }
+    }
+    // при корректных данных форма отправится обычным POST — браузер выполнит редирект, если сервер вернёт Location
+  });
+
+  // init
+  updateVisibility();
+})();
+</script>

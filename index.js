@@ -5,6 +5,10 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Body parsing (для форм и JSON)
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 // Настройки EJS
 app.set('views', path.join(__dirname, 'src', 'frontend', 'templates'));
 app.set('view engine', 'ejs');

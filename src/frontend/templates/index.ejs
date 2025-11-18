@@ -5,20 +5,19 @@
   <%- include('partials/head') %>
 </head>
 <body>
-  <!-- HEADER partial (серверный include) -->
+  <!-- HEADER partial (сохранён, не меняем) -->
   <%- include('components/header') %>
 
-  <!-- MAIN: продающий блок (логический блок main/hero) -->
+  <!-- MAIN: продающая секция + регистрационная форма (partial) -->
   <main id="main-content">
     <section class="hero">
       <div class="container hero-inner">
         <div>
           <h1><%= heading || 'ReferralMVP — простая реферальная программа для вашего продукта' %></h1>
           <p class="lead"><%= lead || 'Запустите реферальную страницу для каждой компании за минуты. Привлекайте клиентов через партнёров и отслеживайте рефералы в одном месте.' %></p>
-          <p>
-            <a href="/pricing" class="aui-button aui-button-primary btn-cta">Попробовать бесплатно</a>
-            <a href="/guide" class="aui-button aui-button-link btn-cta" style="margin-left:10px;">Узнать как</a>
-          </p>
+
+          <!-- Включаем форму регистрации (partial) -->
+          <%- include('partials/registerForm') %>
         </div>
 
         <aside class="preview-card">
@@ -28,7 +27,5 @@
       </div>
     </section>
   </main>
-
-  <!-- Footer можно вынести как partial позже -->
 </body>
 </html>
