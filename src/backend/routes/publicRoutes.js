@@ -7,8 +7,14 @@ const publicController = require('../controllers/publicController');
 // GET / -> главная страница
 router.get('/', publicController.renderHome);
 
-// POST /register-check -> проверка регистрационных данных (email / phone)
-router.post('/register-check', publicController.postRegisterCheck);
+// GET /register -> страница регистрации
+router.get('/register', publicController.renderRegister);
+
+// API: проверка существования аккаунта
+router.post('/api/check-account', publicController.apiCheckAccount);
+
+// API: регистрация (создание аккаунта)
+router.post('/api/register', publicController.apiRegister);
 
 // дополнительные публичные роуты (placeholders)
 router.get('/guide', (req, res) => res.send('Guide — placeholder'));

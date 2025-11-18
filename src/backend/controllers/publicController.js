@@ -4,10 +4,14 @@
  * src/backend/controllers/publicController.js
  *
  * Логические блоки:
- *  - renderHome: рендер главной страницы (существующая логика)
- *  - postRegisterCheck: обработка формы "получить доступ"
+ *  - renderHome (существующая)
+ *  - renderRegister (новая) -> рендерит register.ejs
+ *  - apiCheckAccount (новая) -> JSON { exists: true|false }
+ *  - apiRegister (новая) -> создание записи в data/users.json
  *
- * ВАЖНО: этот файл отвечает только за публичные представления / public API.
+ * Notes:
+ *  - Для простоты пароли сохраняются как plain-text (не рекомендуется в prod).
+ *    В рекомендациях ниже предлагаю использовать bcrypt и валидацию.
  */
 
 const path = require('path');
@@ -15,7 +19,7 @@ const fs = require('fs-extra');
 
 const USERS_FILE = path.join(__dirname, '..', '..', '..', 'data', 'users.json');
 
-/* ---------- renderHome (существующая логика) ---------- */
+/* ---------- renderHome (существующая) ---------- */
 exports.renderHome = (req, res) => {
   const meta = {
     title: 'ReferralMVP — реферальная платформа для вашего продукта',
@@ -30,62 +34,91 @@ exports.renderHome = (req, res) => {
   res.render('index', Object.assign({}, meta, hero));
 };
 
-/* ---------- postRegisterCheck (новая логика) ---------- */
-exports.postRegisterCheck = async (req, res) => {
-  try {
-    // Логика: принять либо email, либо phone (приоритет email если оба переданы)
-    const rawEmail = (req.body && req.body.email) ? String(req.body.email).trim() : '';
-    const rawPhone = (req.body && req.body.phone) ? String(req.body.phone).trim() : '';
+/* ---------- renderRegister (новая) ---------- */
+exports.renderRegister = (req, res) => {
+  const meta = {
+    title: 'Регистрация — ReferralMVP',
+    description: 'Создайте аккаунт в ReferralMVP — укажите email или телефон, далее задайте пароль.',
+  };
 
+  res.render('register', meta);
+};
+
+/* ---------- apiCheckAccount (новая) ---------- */
+exports.apiCheckAccount = async (req, res) => {
+  try {
+    const body = req.body || {};
+    const rawEmail = body.email ? String(body.email).trim() : '';
+    const rawPhone = body.phone ? String(body.phone).trim() : '';
     const email = rawEmail || null;
     const phone = (!email && rawPhone) ? rawPhone : (rawPhone || null);
 
-    // Если нет ни email ни phone — вернём 400 или перенаправим обратно
     if (!email && !phone) {
-      // Можно изменить поведение: вернуть ошибку или редирект с сообщением
-      return res.status(400).send('Требуется email или телефон');
+      return res.status(400).json({ error: 'Требуется email или телефон' });
     }
 
-    // Убедимся, что файл существует и содержит объект { users: [] }
     let data;
     try {
       data = await fs.readJson(USERS_FILE);
-      if (!data || !Array.isArray(data.users)) {
-        data = { users: [] };
-      }
+      if (!data || !Array.isArray(data.users)) data = { users: [] };
     } catch (err) {
-      // Если файла нет или он повреждён, создаём начальную структуру
+      data = { users: [] };
+    }
+
+    const found = data.users.find(u => (email && u.email === email) || (phone && u.phone === phone));
+    return res.json({ exists: Boolean(found) });
+  } catch (err) {
+    console.error('apiCheckAccount error', err);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+/* ---------- apiRegister (новая) ---------- */
+exports.apiRegister = async (req, res) => {
+  try {
+    const body = req.body || {};
+    const rawEmail = body.email ? String(body.email).trim() : '';
+    const rawPhone = body.phone ? String(body.phone).trim() : '';
+    const password = body.password ? String(body.password) : '';
+    const email = rawEmail || null;
+    const phone = (!email && rawPhone) ? rawPhone : (rawPhone || null);
+
+    if (!email && !phone) return res.status(400).send('Требуется email или телефон');
+    if (!password || password.length < 8) return res.status(400).send('Пароль слишком короткий');
+
+    let data;
+    try {
+      data = await fs.readJson(USERS_FILE);
+      if (!data || !Array.isArray(data.users)) data = { users: [] };
+    } catch (err) {
       data = { users: [] };
       await fs.ensureFile(USERS_FILE);
     }
 
-    // Поиск пользователя: совпадение по email ИЛИ по телефону
     const found = data.users.find(u => (email && u.email === email) || (phone && u.phone === phone));
-
     if (found) {
-      // Пользователь уже зарегистрирован — редиректим на /login (страница логина не создаётся)
-      return res.redirect(302, '/login');
+      // если вдруг пользователь появился между проверкой и сабмитом
+      return res.status(409).send('Пользователь уже существует');
     }
 
-    // Пользователь не найден — создаём запись (status: pending) и сохраняем
+    // NOTE: Для MVP сохраняем пароль как plain-string (срочно хешировать в prod)
     const newUser = {
       id: 'user_' + Date.now(),
       email: email || undefined,
       phone: phone || undefined,
-      status: 'pending',          // pending = запрос доступа, позже можно подтвердить
+      password: password,
+      status: 'active',
       createdAt: new Date().toISOString(),
-      source: 'access_request'    // метка источника для аналитики
+      source: 'self_register'
     };
 
     data.users.push(newUser);
     await fs.writeJson(USERS_FILE, data, { spaces: 2 });
 
-    // После сохранения — редиректим на страницу регистрации (не создаём страницу)
-    return res.redirect(302, '/register');
-
+    // Возвращаем 201 (или редиректим клиентом)
+    return res.status(201).json({ ok: true });
   } catch (err) {
-    console.error('postRegisterCheck error:', err);
-    // На ошибку — отдаём 500
+    console.error('apiRegister error', err);
     return res.status(500).send('Internal Server Error');
   }
 };

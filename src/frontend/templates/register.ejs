@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <!-- partial: head (уже есть) -->
+  <%- include('partials/head') %>
+  <style>
+    /* Локальные небольшие правки для формы (будут дополнены в public/css/app.css) */
+    .form-row { margin-bottom: 12px; }
+    .form-note { color: #6b7c86; font-size: 13px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <!-- header partial (существует и не изменяется) -->
+  <%- include('components/header') %>
+
+  <main class="container" style="padding:32px 20px; max-width:720px;">
+    <section class="card" style="padding:28px; border-radius:10px; background:#fff; box-shadow:0 8px 30px rgba(18,28,36,0.04);">
+      <h1 style="margin-top:0; margin-bottom:6px;">Создать аккаунт</h1>
+      <p class="form-note">Укажите email или телефон — мы проверим, есть ли уже аккаунт.</p>
+
+      <!-- Форма: сначала ввод email OR phone и "Далее" -->
+      <form id="register-form" novalidate>
+        <div id="step-credentials">
+          <div class="form-row">
+            <label for="email">Электронная почта</label>
+            <input id="email" name="email" type="email" class="text" placeholder="you@company.com" style="width:100%; padding:10px; border-radius:6px; border:1px solid #dfe6ea;">
+          </div>
+
+          <div class="form-row">
+            <label for="phone">Телефон (альтернативно)</label>
+            <input id="phone" name="phone" type="tel" class="text" placeholder="+7 999 000-00-00" style="width:100%; padding:10px; border-radius:6px; border:1px solid #dfe6ea;">
+          </div>
+
+          <div class="form-row" style="display:flex; gap:10px; align-items:center;">
+            <button id="btn-continue" type="button" class="aui-button aui-button-primary">Далее</button>
+            <a href="/" class="aui-button aui-button-link">Отмена</a>
+          </div>
+
+          <p id="step-message" class="form-note" aria-live="polite" style="display:none;"></p>
+        </div>
+
+        <!-- Скрытый блок паролей, появляется если аккаунт не найден -->
+        <div id="step-passwords" style="display:none; margin-top:12px;">
+          <div class="form-row">
+            <label for="password">Пароль</label>
+            <input id="password" name="password" type="password" class="text" placeholder="Минимум 8 символов" style="width:100%; padding:10px; border-radius:6px; border:1px solid #dfe6ea;">
+          </div>
+
+          <div class="form-row">
+            <label for="confirm">Подтвердите пароль</label>
+            <input id="confirm" name="confirm" type="password" class="text" placeholder="Повторите пароль" style="width:100%; padding:10px; border-radius:6px; border:1px solid #dfe6ea;">
+          </div>
+
+          <div class="form-row" style="display:flex; gap:10px; align-items:center;">
+            <button id="btn-register" type="button" class="aui-button aui-button-primary">Зарегистрироваться</button>
+            <button id="btn-back" type="button" class="aui-button aui-button-link">Назад</button>
+          </div>
+
+          <p id="password-message" class="form-note" aria-live="polite" style="display:none;"></p>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="/public/js/register.js" defer></script>
+</body>
+</html>

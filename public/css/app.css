@@ -292,3 +292,14 @@ body {
   .logo-mark { width: 32px; height: 32px; }
 }
 
+
+/* ==== Registration page styles (only for register page) ==== */
+
+.card { background: #fff; border-radius: 10px; }
+label { display:block; margin-bottom:6px; color:#2b4450; font-weight:600; }
+input.text { border:1px solid #dfe6ea; padding:10px; border-radius:6px; width:100%; }
+input.text:focus { outline:none; border-color:#2684FF; box-shadow:0 6px 16px rgba(38,132,255,0.08); }
+
+button.aui-button-primary { min-width:140px; }
+.form-note { color:#6b7c86; font-size:13px; }
+

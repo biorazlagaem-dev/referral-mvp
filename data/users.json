@@ -1,3 +1,13 @@
 {
-  "users": []
+  "users": [
+    {
+      "id": "user_1763496464444",
+      "email": "test@test.com",
+      "phone": "+79034341551",
+      "password": "123456789",
+      "status": "active",
+      "createdAt": "2025-11-18T20:07:44.444Z",
+      "source": "self_register"
+    }
+  ]
 }
