@@ -1,18 +1,34 @@
-<!-- src/frontend/templates/components/header.ejs -->
-<header class="aui-page-header" role="banner">
-  <div class="container" style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <!-- Левый бренд/кнопка -->
-      <a href="/" class="logo header-brand-btn aui-button aui-button-primary" style="text-decoration:none;">
-        ReferralMVP
+<!-- src/frontend/templates/components/header.ejs
+     Логическая декомпозиция:
+     1) Brand (левый блок) - логотип + название
+     2) Primary Nav (центр) - Гайд
+     3) Actions (право) - Цены, Войти (CTA)
+     Используем EJS-комментарии, НЕ HTML-комментарии
+-->
+
+<header class="site-header" role="banner" aria-label="Главная шапка">
+  <div class="container header-inner">
+    <!-- 1) BRAND -->
+    <div class="header-brand">
+      <a href="/" class="brand-link" aria-label="Перейти на главную">
+        <!-- можно положить svg в public/assets/logo.svg -->
+        <img src="/public/assets/logo.svg" alt="ReferralMVP" class="brand-logo" onerror="this.style.display='none'">
+        <span class="brand-name">ReferralMVP</span>
       </a>
     </div>
 
-    <!-- Правая навигация -->
-    <nav class="header-nav" aria-label="Главная навигация">
-      <a href="/guide" class="aui-button aui-button-link">Гайд</a>
-      <a href="/pricing" class="aui-button aui-button-link">Цены</a>
-      <a href="/login" class="aui-button aui-button-secondary login-btn">Войти</a>
+    <!-- 2) PRIMARY NAV -->
+    <nav class="header-nav" aria-label="Основная навигация">
+      <ul class="nav-list">
+        <li class="nav-item"><a href="/guide" class="nav-link">Гайд</a></li>
+        <li class="nav-item"><a href="/pricing" class="nav-link">Цены</a></li>
+      </ul>
     </nav>
+
+    <!-- 3) ACTIONS -->
+    <div class="header-actions" aria-hidden="false">
+      <a href="/docs" class="aui-button aui-button-link header-action-docs">Документация</a>
+      <a href="/login" class="aui-button aui-button-secondary header-action-login">Войти</a>
+    </div>
   </div>
 </header>

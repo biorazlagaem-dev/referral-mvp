@@ -1,23 +1,47 @@
 /* public/css/app.css
-   Базовые переработанные стили для хедера и главной страницы.
-   Работают вместе с AUI (подключается через CDN в шаблонах).
+   Header: inspired by Atlassian — clear spacing, readable nav, accent CTA.
+   Logical blocks: .site-header -> .header-inner -> .header-brand / .header-nav / .header-actions
 */
 
-/* Общие контейнеры */
+/* Theme variables */
+:root{
+  --brand-blue: #0052CC;    /* акцентный цвет похожий на Atlassian */
+  --muted-ink: #425563;
+  --bg: #ffffff;
+  --border: rgba(16,22,26,0.08);
+  --radius: 8px;
+}
+
+/* Container same as used elsewhere */
 .container {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
-/* Хедер: улучшенная верстка и поведение */
-.aui-page-header {
-  background: #ffffff;
-  border-bottom: 1px solid rgba(16,22,26,0.06);
-  box-shadow: 0 1px 0 rgba(16,22,26,0.03);
+/* SITE HEADER */
+.site-header {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 0 rgba(16,22,26,0.02);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
 }
 
-.aui-page-header .logo {
+/* Inner flex layout */
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 12px 0;
+}
+
+/* BRAND */
+.header-brand .brand-link {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -25,96 +49,87 @@
   color: inherit;
 }
 
-/* Стили для кнопки-логотипа */
-.header-brand-btn {
-  font-weight: 600;
+.brand-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: linear-gradient(135deg, rgba(0,82,204,0.08), rgba(0,82,204,0.02));
+  padding: 4px;
+}
+
+.brand-name {
+  font-weight: 700;
   font-size: 1rem;
-  padding: 8px 14px;
-  border-radius: 6px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  color: var(--brand-blue);
+  letter-spacing: -0.01em;
 }
 
-/* Навигация справа */
-.header-nav {
+/* NAV */
+.header-nav .nav-list {
   display: flex;
-  gap: 12px;
+  gap: 18px;
   align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-/* Link style: переиспользуем стили AUI, но обеспечим плотность */
-.header-nav .aui-button-link {
-  padding: 6px 10px;
-  font-weight: 500;
-}
-
-/* Primary login button slightly more visible */
-.header-nav .login-btn {
-  padding: 6px 12px;
-  border-radius: 6px;
-}
-
-/* Hero / продающий блок */
-.hero {
-  padding: 56px 0;
-  background: linear-gradient(180deg, #f9fbfc 0%, #ffffff 100%);
-  color: #0b2838;
-}
-
-.hero .hero-inner {
-  display: grid;
-  grid-template-columns: 1fr 420px;
-  gap: 32px;
-  align-items: center;
-}
-
-.hero h1 {
-  font-size: 36px;
-  line-height: 1.08;
-  margin: 0 0 16px 0;
-  letter-spacing: -0.02em;
-}
-
-.hero p.lead {
-  font-size: 18px;
-  margin: 0 0 20px 0;
-  color: #425563;
-}
-
-/* CTA */
-.btn-cta {
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-size: 16px;
+.nav-link {
+  text-decoration: none;
+  color: var(--muted-ink);
   font-weight: 600;
-  display: inline-block;
+  padding: 8px 6px;
+  border-radius: 6px;
+  transition: background .12s ease, color .12s ease;
 }
 
-/* Карточка справа (preview) */
-.preview-card {
-  border: 1px solid rgba(16,22,26,0.06);
-  padding: 20px;
-  border-radius: 10px;
-  background: #fff;
-  box-shadow: 0 6px 20px rgba(16,22,26,0.04);
+.nav-link:hover,
+.nav-link:focus {
+  background: rgba(0,82,204,0.06);
+  color: var(--brand-blue);
+  outline: none;
 }
 
-/* Отзывчивость */
-@media (max-width: 900px) {
-  .hero .hero-inner {
-    grid-template-columns: 1fr;
+/* ACTIONS (CTA + login) */
+.header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.header-action-docs.aui-button-link {
+  color: var(--muted-ink);
+  font-weight: 600;
+  height: 36px;
+  padding: 6px 10px;
+}
+
+.header-action-login.aui-button-secondary {
+  height: 36px;
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  box-shadow: none;
+}
+
+/* Mobile behaviour: collapse nav to the right under actions (simple solution for MVP) */
+@media (max-width: 860px) {
+  .header-inner {
+    gap: 12px;
+    padding: 10px 0;
   }
 
   .header-nav {
-    gap: 8px;
+    display: none; /* простая мобильная деградация — позже можно добавить бургер */
   }
+
+  .brand-name { font-size: 0.95rem; }
 }
 
-/* Небольшие улучшения типографики */
+/* Minor typographic improvements */
 body {
   font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  color: #102b3a;
+  color: #0b2838;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

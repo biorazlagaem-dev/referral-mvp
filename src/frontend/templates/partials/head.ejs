@@ -1,22 +1,17 @@
-<!-- src/frontend/templates/partials/head.ejs -->
-<!-- HEAD partial: логические блоки -->
-<!--  1) Meta: charset, viewport, title, description, social meta -->
+<!-- src/frontend/templates/partials/head.ejs
+     HEAD partial (meta / styles / opcional scripts)
+     Используем EJS-комментарии, чтобы не мешать рендеру
+-->
+
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title><%= title || 'ReferralMVP' %></title>
 <meta name="description" content="<%= typeof description !== 'undefined' ? description : 'Простая реферальная программа для вашего продукта' %>">
 
-<!-- Open Graph (простые значения, можно расширить) -->
 <meta property="og:title" content="<%= title || 'ReferralMVP' %>">
 <meta property="og:description" content="<%= typeof description !== 'undefined' ? description : 'Простая реферальная программа для вашего продукта' %>">
 <meta property="og:type" content="website">
 
-<!--  2) Styles: AUI + local styles -->
-<!-- AUI (Atlassian UI) CDN -->
+<!-- AUI CDN + локальные стили (локальные стили подключаем после AUI чтобы переопределять) -->
 <link rel="stylesheet" href="https://aui-cdn.atlassian.com/aui-adg/9.0.0/css/aui.css">
 <link rel="stylesheet" href="/public/css/app.css">
-
-<!--  3) Optional head scripts or preload (оставлено пустым для расширения) --->
-<% if (typeof headScripts !== 'undefined') { %>
-  <%- headScripts %>
-<% } %>
