@@ -5,27 +5,94 @@
   <%- include('partials/head') %>
 </head>
 <body>
-  <!-- HEADER partial (сохранён, не меняем) -->
+  <!-- HEADER partial (серверный include) - не трогаем -->
   <%- include('components/header') %>
 
-  <!-- MAIN: продающая секция + регистрационная форма (partial) -->
+  <!-- MAIN: продающий блок + форма регистрации -->
   <main id="main-content">
+    <!-- HERO: selling + short features -->
     <section class="hero">
-      <div class="container hero-inner">
+      <div class="container hero-inner" style="align-items:start;">
         <div>
-          <h1><%= heading || 'ReferralMVP — простая реферальная программа для вашего продукта' %></h1>
-          <p class="lead"><%= lead || 'Запустите реферальную страницу для каждой компании за минуты. Привлекайте клиентов через партнёров и отслеживайте рефералы в одном месте.' %></p>
+          <h1><%= heading || 'ReferralMVP — простая реферальная программа' %></h1>
+          <p class="lead"><%= lead || 'Создавайте продающие страницы для компаний, привлекайте партнёров и отслеживайте рефералы. Быстрая настройка — быстрый рост.' %></p>
 
-          <!-- Включаем форму регистрации (partial) -->
-          <%- include('partials/registerForm') %>
+          <!-- Короткие преимущества (в стиле Atlassian / Jira) -->
+          <ul class="feature-list" style="margin-top:18px; padding-left:18px;">
+            <li><strong>Мгновенные продающие страницы</strong> — стартуйте кампанию без разработчика.</li>
+            <li><strong>Прозрачная статистика</strong> — партнёры и владельцы компании видят конверсии.</li>
+            <li><strong>Гибкий учёт</strong> — email или телефон для удобного контакта.</li>
+          </ul>
+
+          <p style="margin-top:18px;">
+            <a href="/pricing" class="aui-button aui-button-primary btn-cta">Попробовать бесплатно</a>
+            <a href="/guide" class="aui-button aui-button-link btn-cta" style="margin-left:10px;">Как это работает</a>
+          </p>
         </div>
 
-        <aside class="preview-card">
-          <strong>Превью компании</strong>
-          <p style="margin-top:8px;color:#566b75;font-size:14px;">Карточка превью продающей страницы компании (здесь будет реальный preview).</p>
+        <!-- Signup card: форма (email или phone) -->
+        <aside class="preview-card signup-card" aria-labelledby="signup-title">
+          <h3 id="signup-title" style="margin:0 0 8px 0;">Начать прямо сейчас</h3>
+          <p style="margin:0 0 12px 0; color:#566b75; font-size:14px;">Оставьте email или телефон — мы проверим и перенаправим дальше.</p>
+
+          <!-- Форма: отправляет POST /signup, сервер решит redirect -->
+          <form action="/signup" method="post" class="signup-form" novalidate>
+            <!-- выбор типа контакта -->
+            <div style="display:flex;gap:8px;margin-bottom:10px;">
+              <label style="display:inline-flex;align-items:center;gap:6px;">
+                <input type="radio" name="contactType" value="email" checked> Email
+              </label>
+              <label style="display:inline-flex;align-items:center;gap:6px;">
+                <input type="radio" name="contactType" value="phone"> Телефон
+              </label>
+            </div>
+
+            <!-- Email input -->
+            <div class="field email-field" style="margin-bottom:10px;">
+              <label class="visually-hidden" for="signup-email">Email</label>
+              <input id="signup-email" name="email" type="email" placeholder="you@example.com" class="aui-field" />
+            </div>
+
+            <!-- Phone input -->
+            <div class="field phone-field" style="margin-bottom:10px; display:none;">
+              <label class="visually-hidden" for="signup-phone">Телефон</label>
+              <input id="signup-phone" name="phone" type="tel" placeholder="+7 900 000-00-00" class="aui-field" />
+            </div>
+
+            <div style="display:flex;gap:8px;align-items:center;">
+              <button type="submit" class="aui-button aui-button-primary" style="padding:10px 14px;">Зарегистрироваться</button>
+              <div style="font-size:13px;color:#60707a;">Мы не рассылаем спам. <a href="/privacy">Политика конфиденциальности</a></div>
+            </div>
+          </form>
+
+          <!-- Небольшая подсказка -->
+          <p style="margin-top:12px;font-size:13px;color:#7b8b93;">Если у вас уже есть аккаунт — вы будете перенаправлены на страницу входа.</p>
         </aside>
       </div>
     </section>
   </main>
+
+  <!-- client-side script only for toggling visible input (email/phone) - minimal, only для UX -->
+  <script>
+    (function(){
+      const form = document.querySelector('.signup-form');
+      const emailField = document.querySelector('.email-field');
+      const phoneField = document.querySelector('.phone-field');
+      const radios = form.querySelectorAll('input[name="contactType"]');
+
+      function updateFields() {
+        const val = form.querySelector('input[name="contactType"]:checked').value;
+        if (val === 'email') {
+          emailField.style.display = '';
+          phoneField.style.display = 'none';
+        } else {
+          emailField.style.display = 'none';
+          phoneField.style.display = '';
+        }
+      }
+      radios.forEach(r => r.addEventListener('change', updateFields));
+      updateFields();
+    })();
+  </script>
 </body>
 </html>

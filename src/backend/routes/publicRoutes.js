@@ -1,18 +1,27 @@
-'use strict';
-
+/*
+  src/backend/routes/publicRoutes.js
+  Логические блоки:
+    - middleware: body-parser для обработки формы (локально в этом роутере)
+    - GET routes: '/', '/guide', '/pricing'
+    - POST '/signup' -> publicController.handleSignup
+*/
 const express = require('express');
+const bodyParser = require('body-parser');
 const router = express.Router();
 const publicController = require('../controllers/publicController');
-const authController = require('../controllers/authController');
 
-// GET / -> главная страница
+// локальные middleware для парсинга форм/JSON (не меняем global app)
+router.use(bodyParser.urlencoded({ extended: true }));
+router.use(bodyParser.json());
+
+// GET / -> главная
 router.get('/', publicController.renderHome);
 
-// POST /register-check -> проверка регистрации (email или phone)
-router.post('/register-check', authController.registerCheck);
-
-// дополнительные публичные роуты (guide, pricing и т.д.) — оставить заглушки
+// дополнительные публичные роуты (заглушки)
 router.get('/guide', (req, res) => res.send('Guide — placeholder'));
 router.get('/pricing', (req, res) => res.send('Pricing — placeholder'));
+
+// POST /signup -> обработка формы регистрации (email или phone)
+router.post('/signup', publicController.handleSignup);
 
 module.exports = router;

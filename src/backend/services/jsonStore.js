@@ -1,68 +1,70 @@
-'use strict';
-
-/**
- * jsonStore.js — простая обёртка для чтения/записи JSON файлов в data/
- * Логические блоки:
- *  - low-level: readFile/writeFile
- *  - users API: getUsers, findUserByEmailOrPhone, addUser
- */
-
-const fs = require('fs-extra');
+/*
+  src/backend/services/jsonStore.js
+  Логическая декомпозиция:
+    - filePath(type) -> путь к data/<type>.json
+    - read(type) -> {items array}
+    - write(type, items) -> записывает { <type>: items }
+    - findUserByEmailOrPhone({email, phone})
+    - addUser(userObj)
+*/
 const path = require('path');
+const fs = require('fs').promises;
 
-const DATA_DIR = path.join(__dirname, '..', '..', '..', 'data');
+const DATA_DIR = path.join(__dirname, '..', '..', 'data');
 
-async function readFile(name) {
-  const p = path.join(DATA_DIR, name);
+function filePath(type) {
+  return path.join(DATA_DIR, `${type}.json`);
+}
+
+async function read(type) {
+  const fp = filePath(type);
   try {
-    const obj = await fs.readJson(p);
-    return obj;
+    const raw = await fs.readFile(fp, 'utf8');
+    const obj = JSON.parse(raw || '{}');
+    // структура: { "users": [...] } или { "companies": [...] }
+    return obj[type] || [];
   } catch (err) {
-    // если файл не найден или некорректен — вернём пустую структуру
-    return {};
+    if (err.code === 'ENOENT') return [];
+    throw err;
   }
 }
 
-async function writeFile(name, data) {
-  const p = path.join(DATA_DIR, name);
-  await fs.outputJson(p, data, { spaces: 2 });
-}
-
-/* ==========================
-   Users API
-   ========================== */
-
-async function getUsers() {
-  const content = await readFile('users.json');
-  return Array.isArray(content.users) ? content.users : [];
+async function write(type, items) {
+  const fp = filePath(type);
+  const payload = {};
+  payload[type] = items;
+  // atomic-ish write: write temp then rename
+  const tmp = fp + '.tmp';
+  await fs.writeFile(tmp, JSON.stringify(payload, null, 2), 'utf8');
+  await fs.rename(tmp, fp);
+  return payload;
 }
 
 async function findUserByEmailOrPhone({ email, phone }) {
-  const users = await getUsers();
-  const e = email ? String(email).trim().toLowerCase() : null;
-  const p = phone ? String(phone).trim() : null;
-  return users.find(u => (e && u.email && String(u.email).toLowerCase() === e) || (p && u.phone && String(u.phone) === p)) || null;
+  const users = await read('users');
+  if (email) {
+    const e = String(email).trim().toLowerCase();
+    const found = users.find(u => u.email && String(u.email).trim().toLowerCase() === e);
+    if (found) return found;
+  }
+  if (phone) {
+    const p = String(phone).trim();
+    const found = users.find(u => u.phone && String(u.phone).trim() === p);
+    if (found) return found;
+  }
+  return null;
 }
 
-async function addUser({ email, phone }) {
-  const users = await getUsers();
-  const id = 'user_' + Date.now();
-  const user = {
-    id,
-    email: email ? String(email).trim() : null,
-    phone: phone ? String(phone).trim() : null,
-    createdAt: new Date().toISOString()
-  };
+async function addUser(user) {
+  const users = await read('users');
   users.push(user);
-  await writeFile('users.json', { users });
+  await write('users', users);
   return user;
 }
 
 module.exports = {
-  readFile,
-  writeFile,
-  /* users API */
-  getUsers,
+  read,
+  write,
   findUserByEmailOrPhone,
-  addUser
+  addUser,
 };
