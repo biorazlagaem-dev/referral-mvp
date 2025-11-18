@@ -1,6 +1,6 @@
 <!-- src/frontend/templates/partials/head.ejs -->
-<!-- HEAD partial: логические блоки  -->
-<!--1) Meta: charset, viewport, title, description, social meta  -->
+<!-- HEAD partial: логические блоки -->
+<!--  1) Meta: charset, viewport, title, description, social meta -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title><%= title || 'ReferralMVP' %></title>
@@ -11,12 +11,12 @@
 <meta property="og:description" content="<%= typeof description !== 'undefined' ? description : 'Простая реферальная программа для вашего продукта' %>">
 <meta property="og:type" content="website">
 
-<!-- 2) Styles: AUI + local styles -->
+<!--  2) Styles: AUI + local styles -->
 <!-- AUI (Atlassian UI) CDN -->
 <link rel="stylesheet" href="https://aui-cdn.atlassian.com/aui-adg/9.0.0/css/aui.css">
 <link rel="stylesheet" href="/public/css/app.css">
 
-<!-- 3) Optional head scripts or preload (оставлено пустым для расширения) -->
+<!--  3) Optional head scripts or preload (оставлено пустым для расширения) --->
 <% if (typeof headScripts !== 'undefined') { %>
   <%- headScripts %>
 <% } %>
