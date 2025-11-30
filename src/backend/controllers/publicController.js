@@ -1,124 +1,219 @@
 'use strict';
 
-/**
- * src/backend/controllers/publicController.js
- *
- * Логические блоки:
- *  - renderHome (существующая)
- *  - renderRegister (новая) -> рендерит register.ejs
- *  - apiCheckAccount (новая) -> JSON { exists: true|false }
- *  - apiRegister (новая) -> создание записи в data/users.json
- *
- * Notes:
- *  - Для простоты пароли сохраняются как plain-text (не рекомендуется в prod).
- *    В рекомендациях ниже предлагаю использовать bcrypt и валидацию.
- */
-
 const path = require('path');
 const fs = require('fs-extra');
 
 const USERS_FILE = path.join(__dirname, '..', '..', '..', 'data', 'users.json');
+const COMPANIES_FILE = path.join(__dirname, '..', '..', '..', 'data', 'companies.json');
+const PARTNERS_FILE = path.join(__dirname, '..', '..', '..', 'data', 'partners.json');
+const CLIENTS_FILE = path.join(__dirname, '..', '..', '..', 'data', 'clients.json'); // may not exist initially
+const SITES_FILE = path.join(__dirname, '..', '..', '..', 'data', 'sites.json');
 
-/* ---------- renderHome (существующая) ---------- */
-exports.renderHome = (req, res) => {
-  const meta = {
-    title: 'ReferralMVP — реферальная платформа для вашего продукта',
-    description: 'Запустите реферальную программу и продающие страницы для компаний за минуты.',
-  };
-
-  const hero = {
-    heading: 'ReferralMVP — простая реферальная программа для вашего продукта',
-    lead: 'Запустите реферальную страницу для каждой компании за минуты. Привлекайте клиентов через партнёров и отслеживайте рефералы в одном месте.',
-  };
-
-  res.render('index', Object.assign({}, meta, hero));
-};
-
-/* ---------- renderRegister (новая) ---------- */
-exports.renderRegister = (req, res) => {
-  const meta = {
-    title: 'Регистрация — ReferralMVP',
-    description: 'Создайте аккаунт в ReferralMVP — укажите email или телефон, далее задайте пароль.',
-  };
-
-  res.render('register', meta);
-};
-
-/* ---------- apiCheckAccount (новая) ---------- */
-exports.apiCheckAccount = async (req, res) => {
+/* ---------- helpers ---------- */
+async function readSafe(file, defaultObj) {
   try {
-    const body = req.body || {};
-    const rawEmail = body.email ? String(body.email).trim() : '';
-    const rawPhone = body.phone ? String(body.phone).trim() : '';
-    const email = rawEmail || null;
-    const phone = (!email && rawPhone) ? rawPhone : (rawPhone || null);
+    const d = await fs.readJson(file);
+    return d;
+  } catch (e) {
+    return defaultObj;
+  }
+}
+async function writeSafe(file, obj) {
+  await fs.ensureFile(file);
+  await fs.writeJson(file, obj, { spaces: 2 });
+}
 
-    if (!email && !phone) {
-      return res.status(400).json({ error: 'Требуется email или телефон' });
+/* ---------- renderCompanyOwner (new) ---------- */
+exports.renderCompanyOwner = async (req, res) => {
+  try {
+    const email = req.query.email;
+    const phone = req.query.phone;
+    // find user
+    const usersData = await readSafe(USERS_FILE, { users: [] });
+    const user = usersData.users.find(u => (email && u.email === email) || (phone && u.phone === phone));
+    if (!user) {
+      // if not found, redirect to login
+      return res.redirect('/login');
     }
 
-    let data;
-    try {
-      data = await fs.readJson(USERS_FILE);
-      if (!data || !Array.isArray(data.users)) data = { users: [] };
-    } catch (err) {
-      data = { users: [] };
-    }
+    // companies owned by user (ownerId matches user.id) - companies.json contains companies array
+    const companiesData = await readSafe(COMPANIES_FILE, { companies: [] });
+    const companies = companiesData.companies.filter(c => c.ownerId === user.id);
 
-    const found = data.users.find(u => (email && u.email === email) || (phone && u.phone === phone));
-    return res.json({ exists: Boolean(found) });
+    // partners for those companies
+    const partnersData = await readSafe(PARTNERS_FILE, { partners: [] });
+    const partners = partnersData.partners.filter(p => companies.some(c => c.id === p.companyId));
+
+    // clients: try clients.json or build from referrals.json if exists
+    const clientsData = await readSafe(CLIENTS_FILE, { clients: [] });
+    const clients = clientsData.clients.filter(cl => companies.some(c => c.id === cl.companyId))
+      .map(cl => {
+        const partner = partners.find(p => p.id === cl.partnerId) || {};
+        return Object.assign({}, cl, { partnerName: partner.name });
+      });
+
+    res.render('company-owner', {
+      user,
+      companies,
+      partners,
+      clients
+    });
   } catch (err) {
-    console.error('apiCheckAccount error', err);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    console.error('renderCompanyOwner error', err);
+    res.status(500).send('Internal Server Error');
   }
 };
 
-/* ---------- apiRegister (новая) ---------- */
-exports.apiRegister = async (req, res) => {
+/* ---------- API: company-owner data (used by client) ---------- */
+exports.apiCompanyOwnerData = async (req, res) => {
   try {
     const body = req.body || {};
-    const rawEmail = body.email ? String(body.email).trim() : '';
-    const rawPhone = body.phone ? String(body.phone).trim() : '';
-    const password = body.password ? String(body.password) : '';
-    const email = rawEmail || null;
-    const phone = (!email && rawPhone) ? rawPhone : (rawPhone || null);
+    const email = body.email;
+    const phone = body.phone;
+    const usersData = await readSafe(USERS_FILE, { users: [] });
+    const user = usersData.users.find(u => (email && u.email === email) || (phone && u.phone === phone));
+    if (!user) return res.status(404).send('User not found');
 
-    if (!email && !phone) return res.status(400).send('Требуется email или телефон');
-    if (!password || password.length < 8) return res.status(400).send('Пароль слишком короткий');
+    const companiesData = await readSafe(COMPANIES_FILE, { companies: [] });
+    const companies = companiesData.companies.filter(c => c.ownerId === user.id);
 
-    let data;
-    try {
-      data = await fs.readJson(USERS_FILE);
-      if (!data || !Array.isArray(data.users)) data = { users: [] };
-    } catch (err) {
-      data = { users: [] };
-      await fs.ensureFile(USERS_FILE);
-    }
+    const partnersData = await readSafe(PARTNERS_FILE, { partners: [] });
+    const partners = partnersData.partners.filter(p => companies.some(c => c.id === p.companyId));
 
-    const found = data.users.find(u => (email && u.email === email) || (phone && u.phone === phone));
-    if (found) {
-      // если вдруг пользователь появился между проверкой и сабмитом
-      return res.status(409).send('Пользователь уже существует');
-    }
+    const clientsData = await readSafe(CLIENTS_FILE, { clients: [] });
+    const clients = clientsData.clients.filter(cl => companies.some(c => c.id === cl.companyId)).map(cl => {
+      const partner = partners.find(p => p.id === cl.partnerId) || {};
+      return Object.assign({}, cl, { partnerName: partner.name });
+    });
 
-    // NOTE: Для MVP сохраняем пароль как plain-string (срочно хешировать в prod)
-    const newUser = {
-      id: 'user_' + Date.now(),
-      email: email || undefined,
-      phone: phone || undefined,
-      password: password,
-      status: 'active',
-      createdAt: new Date().toISOString(),
-      source: 'self_register'
-    };
-
-    data.users.push(newUser);
-    await fs.writeJson(USERS_FILE, data, { spaces: 2 });
-
-    // Возвращаем 201 (или редиректим клиентом)
-    return res.status(201).json({ ok: true });
+    return res.json({ user, companies, partners, clients });
   } catch (err) {
-    console.error('apiRegister error', err);
+    console.error('apiCompanyOwnerData error', err);
     return res.status(500).send('Internal Server Error');
+  }
+};
+
+/* ---------- API: create/update company site (new) ---------- */
+exports.apiCompanySite = async (req, res) => {
+  try {
+    const body = req.body || {};
+    const id = body.id; // optional (edit)
+    const name = body.name ? String(body.name).trim() : '';
+    const description = body.description ? String(body.description).trim() : '';
+    // For MVP owner is not enforced server side (we rely on ownerId passed client-side via query as earlier)
+    // But we try to infer owner from query params in body (email/phone) if provided
+    const ownerEmail = body.email;
+    const ownerPhone = body.phone;
+
+    if (!name) return res.status(400).send('Требуется имя сайта');
+
+    const sitesData = await readSafe(SITES_FILE, { sites: [] });
+
+    if (id) {
+      const idx = sitesData.sites.findIndex(s => s.id === id);
+      if (idx === -1) return res.status(404).send('Site not found');
+      sitesData.sites[idx].name = name;
+      sitesData.sites[idx].description = description;
+      await writeSafe(SITES_FILE, sitesData);
+      return res.json({ ok: true, site: sitesData.sites[idx] });
+    }
+
+    // create new
+    const slug = name.toLowerCase().replace(/[^\w\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-');
+    const newSite = {
+      id: 'site_' + Date.now(),
+      name,
+      description,
+      slug,
+      createdAt: new Date().toISOString(),
+      ownerEmail: ownerEmail || undefined,
+      ownerPhone: ownerPhone || undefined
+    };
+    sitesData.sites.push(newSite);
+    await writeSafe(SITES_FILE, sitesData);
+    return res.status(201).json({ ok: true, site: newSite });
+  } catch (err) {
+    console.error('apiCompanySite error', err);
+    return res.status(500).send('Internal Server Error');
+  }
+};
+
+/* ---------- API: get site by id (for edit) ---------- */
+exports.apiSiteGet = async (req, res) => {
+  try {
+    const body = req.body || {};
+    const siteId = body.siteId;
+    if(!siteId) return res.status(400).send('siteId required');
+    const sitesData = await readSafe(SITES_FILE, { sites: [] });
+    const site = sitesData.sites.find(s => s.id === siteId);
+    if(!site) return res.status(404).send('Not found');
+    return res.json({ site });
+  } catch (err) { console.error(err); return res.status(500).send('Internal Server Error'); }
+};
+
+/* ---------- API: partner reset (new) ---------- */
+exports.apiPartnerReset = async (req, res) => {
+  try {
+    const body = req.body || {};
+    const pid = body.partnerId;
+    if(!pid) return res.status(400).send('partnerId required');
+    const pData = await readSafe(PARTNERS_FILE, { partners: [] });
+    const idx = pData.partners.findIndex(p => p.id === pid);
+    if(idx === -1) return res.status(404).send('Partner not found');
+    pData.partners[idx].earned = 0;
+    pData.partners[idx].clients = 0;
+    await writeSafe(PARTNERS_FILE, pData);
+    return res.json({ ok: true });
+  } catch (err) { console.error(err); return res.status(500).send('Internal Server Error'); }
+};
+
+/* ---------- API: client update status (new) ---------- */
+exports.apiClientUpdateStatus = async (req, res) => {
+  try {
+    const body = req.body || {};
+    const clientId = body.clientId;
+    const status = body.status;
+    if(!clientId) return res.status(400).send('clientId required');
+    const cData = await readSafe(CLIENTS_FILE, { clients: [] });
+    const idx = cData.clients.findIndex(c => c.id === clientId);
+    if(idx === -1) return res.status(404).send('Client not found');
+    cData.clients[idx].status = status;
+    await writeSafe(CLIENTS_FILE, cData);
+    return res.json({ ok: true });
+  } catch (err) { console.error(err); return res.status(500).send('Internal Server Error'); }
+};
+
+/* ---------- API: change password (new, simple) ---------- */
+exports.apiChangePassword = async (req, res) => {
+  try {
+    const body = req.body || {};
+    const email = body.email;
+    const phone = body.phone;
+    const oldp = body.old;
+    const passwd = body.password;
+    if((!email && !phone) || !passwd) return res.status(400).send('Bad request');
+
+    const uData = await readSafe(USERS_FILE, { users: [] });
+    const u = uData.users.find(x => (email && x.email === email) || (phone && x.phone === phone));
+    if(!u) return res.status(404).send('User not found');
+    if(u.password !== oldp) return res.status(401).send('Old password mismatch');
+
+    u.password = passwd;
+    await writeSafe(USERS_FILE, uData);
+    return res.json({ ok: true });
+  } catch (err) { console.error(err); return res.status(500).send('Internal Server Error'); }
+};
+
+/* ---------- render site by slug (public preview) ---------- */
+exports.renderSiteBySlug = async (req, res) => {
+  try {
+    const slug = req.params.slug;
+    const sData = await readSafe(SITES_FILE, { sites: [] });
+    const site = sData.sites.find(s => s.slug === slug);
+    if(!site) return res.status(404).send('Site not found');
+    // Very simple render: show title and description
+    res.send(`<html><head><title>${site.name}</title></head><body><h1>${site.name}</h1><p>${site.description||''}</p></body></html>`);
+  } catch (err) {
+    console.error(err); res.status(500).send('Internal Server Error');
   }
 };

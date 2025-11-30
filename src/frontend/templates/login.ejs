@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <!-- HEAD partial -->
+  <%- include('partials/head') %>
+</head>
+<body>
+  <!-- HEADER partial -->
+  <%- include('components/header') %>
+
+  <!-- Логическая структура: контейнер страницы -> центрированная панель входа -->
+  <main class="auth-page" role="main" aria-labelledby="auth-heading">
+    <div class="auth-shell container">
+      <div class="auth-card" role="form" aria-describedby="auth-desc">
+        <div class="auth-brand">
+          <a href="/" class="logo" aria-label="ReferralMVP Home">
+            <span class="logo-mark" aria-hidden="true">
+              <!-- svg brand (consistent with header) -->
+              <svg width="36" height="36" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
+                <defs>
+                  <linearGradient id="lg1" x1="0" x2="1" y1="0" y2="1">
+                    <stop offset="0%" stop-color="#0052CC"/>
+                    <stop offset="100%" stop-color="#2684FF"/>
+                  </linearGradient>
+                </defs>
+                <rect rx="6" width="28" height="28" fill="url(#lg1)"></rect>
+                <text x="50%" y="54%" text-anchor="middle" fill="#fff" font-family="Segoe UI, Roboto, Arial" font-size="14" font-weight="700">R</text>
+              </svg>
+            </span>
+            <span class="logo-text">ReferralMVP</span>
+          </a>
+        </div>
+
+        <div class="auth-body">
+          <h1 id="auth-heading">Войти в аккаунт</h1>
+          <p id="auth-desc" class="auth-desc">Введите электронную почту или телефон, чтобы войти.</p>
+
+          <!-- Форма: сначала email/phone, затем пароль (динамически показывается) -->
+          <form id="login-form" novalidate>
+            <div id="step-identifier" class="form-block">
+              <label for="identifier" class="field-label">Электронная почта или телефон</label>
+              <input id="identifier" name="identifier" class="text" type="text" inputmode="email" placeholder="you@company.com или +7 999 000-00-00" autocomplete="username" />
+              <div class="form-help" id="id-help" aria-live="polite"></div>
+
+              <div class="form-actions" style="margin-top:16px;">
+                <button id="btn-continue" type="button" class="aui-button aui-button-primary">Далее</button>
+                <a href="/" class="aui-button aui-button-link">Отмена</a>
+              </div>
+            </div>
+
+            <div id="step-password" class="form-block" style="display:none;">
+              <label for="login-password" class="field-label">Пароль</label>
+              <input id="login-password" name="password" class="text" type="password" autocomplete="current-password" />
+              <div class="form-help" id="pw-help" aria-live="polite"></div>
+
+              <div class="form-actions" style="margin-top:16px;">
+                <button id="btn-signin" type="button" class="aui-button aui-button-primary">Войти</button>
+                <button id="btn-back" type="button" class="aui-button aui-button-link">Изменить адрес</button>
+              </div>
+            </div>
+          </form>
+
+          <div class="auth-footer">
+            <p class="auth-footer-note">Нет аккаунта? <a id="create-account-link" href="/register">Создать аккаунт</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/public/js/login.js" defer></script>
+</body>
+</html>

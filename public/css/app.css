@@ -303,3 +303,664 @@ input.text:focus { outline:none; border-color:#2684FF; box-shadow:0 6px 16px rgb
 button.aui-button-primary { min-width:140px; }
 .form-note { color:#6b7c86; font-size:13px; }
 
+
+/* ==== Registration improvements (only registration page) ==== */
+
+/* Card */
+.register-card { background: #fff; border-radius: 10px; box-shadow: 0 10px 30px rgba(18,28,36,0.04); }
+
+/* Form layout */
+.form-row { margin-bottom: 14px; }
+label { display:block; margin-bottom:8px; font-weight:600; color:#0b2b3a; }
+.form-help { color:#6b7c86; font-size:13px; margin-top:6px; }
+.field-error { color:#b00020; font-size:13px; margin-top:6px; }
+
+/* Inputs */
+.text {
+  width:100%;
+  padding:10px 12px;
+  border:1px solid #dfe6ea;
+  border-radius:6px;
+  font-size:15px;
+  transition: box-shadow .15s, border-color .15s;
+  background:#fff;
+}
+.text:focus {
+  outline:none;
+  border-color:#2684FF;
+  box-shadow: 0 8px 24px rgba(38,132,255,0.08);
+}
+
+/* Buttons and spinner */
+.aui-button { font-weight:600; border-radius:8px; }
+.aui-button-primary { background: linear-gradient(90deg,#0052CC,#2684FF); border:none; color:#fff; }
+.spinner {
+  display:inline-block;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  border:2px solid rgba(255,255,255,0.4);
+  border-left-color: rgba(255,255,255,0.95);
+  margin-left:8px;
+  vertical-align:middle;
+  animation: spin .9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Password strength bars */
+.pw-strength { display:block; }
+.pw-bars { display:flex; gap:6px; }
+.pw-bars .bar {
+  width: 22%;
+  height:8px;
+  background: #eef3f5;
+  border-radius:4px;
+  transition: background .15s, transform .12s;
+}
+.pw-bars .bar.active { background: linear-gradient(90deg,#f6c; #2684FF); transform: translateY(-2px); }
+
+/* Responsive tweaks */
+@media (max-width:700px){
+  .container { padding-left:16px; padding-right:16px; }
+  .pw-bars .bar { width: 23%; }
+}
+
+/* ===== Registration improvements: inputs and layout (Atlassian-like) ===== */
+
+/* card already defined; мелкие правки для единообразия */
+.register-card { background: #fff; border-radius: 12px; padding: 28px; }
+
+/* labels */
+.label { display:block; margin-bottom:8px; font-weight:600; color:#2b4450; }
+
+/* AUI-like input styles */
+.aui-field, .text {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #d7e3ea;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+  color: #0b2838;
+  transition: box-shadow .14s ease, border-color .14s ease, transform .12s ease;
+}
+
+/* focus state similar to Atlassian */
+.aui-field:focus, .text:focus {
+  outline: none;
+  border-color: #2f7ae5;
+  box-shadow: 0 8px 24px rgba(47,122,229,0.08);
+  transform: translateY(-1px);
+}
+
+/* helper text */
+.form-help { color: #6b7c86; font-size: 13px; margin-top:6px; }
+
+/* buttons: ensure consistent min-width and spacing */
+.aui-button.aui-button-primary {
+  min-width: 140px;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-weight: 600;
+}
+
+/* subtle responsive behaviour */
+@media (max-width: 700px) {
+  .register-card { padding: 20px; }
+  .aui-button.aui-button-primary { min-width: 120px; }
+}
+
+/* small visual polish for status messages */
+[role="status"] { color: #445760; font-size: 13px; }
+[role="status"].error { color: #c53030; }
+
+
+/* ===============================
+   Registration page — Atlassian-like styles
+   (only styles for register page; inspired by atlassian.com / id.atlassian.com)
+   Logical blocks: variables, layout, inputs, buttons, helper text, responsive
+   =============================== */
+
+/* ---------- Theme variables (логический блок) ---------- */
+:root {
+  --brand-600: #0052CC;
+  --brand-500: #2684FF;
+  --muted-700: #0b2940;    /* headings */
+  --muted-500: #425563;    /* body */
+  --muted-300: #dfe6ea;    /* borders */
+  --bg-page: #f6f9fb;
+  --card-bg: #ffffff;
+  --shadow-1: 0 8px 30px rgba(18,28,36,0.06);
+  --radius-lg: 12px;
+  --radius-md: 8px;
+  --transition-fast: 150ms cubic-bezier(.2,.9,.2,1);
+}
+
+/* ---------- Page background (apply subtly only when visible) ---------- */
+main.container {
+  background: var(--bg-page);
+  padding-top: 40px;
+  padding-bottom: 48px;
+  min-height: calc(100vh - 80px);
+}
+
+/* ---------- Card / layout (логический блок) ---------- */
+main.container > section.card {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 36px;
+  border-radius: var(--radius-lg);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-1);
+  border: 1px solid rgba(16,22,26,0.04);
+}
+
+/* Заголовок карточки */
+main.container > section.card h1 {
+  margin: 0 0 6px 0;
+  color: var(--muted-700);
+  font-size: 22px;
+  line-height: 1.1;
+  font-weight: 700;
+}
+
+/* Подзаголовок/описание */
+main.container > section.card .form-note {
+  margin: 6px 0 18px 0;
+  color: var(--muted-500);
+  font-size: 13px;
+}
+
+/* ---------- Поля ввода (логический блок) ---------- */
+/* Общий контейнер поля */
+.form-row {
+  margin-bottom: 14px;
+}
+
+/* Метка */
+label {
+  display:block;
+  margin-bottom:8px;
+  color: var(--muted-700);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* Текстовое поле — единый, чистый стиль, похожий на Atlassian */
+input.text {
+  display: block;
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  color: var(--muted-700);
+  background: linear-gradient(180deg, #FFFFFF, #FBFDFF);
+  border: 1px solid var(--muted-300);
+  border-radius: var(--radius-md);
+  box-shadow: none;
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* Небольшой placeholder-стиль */
+input.text::placeholder { color: #9aa7b1; }
+
+/* Фокус: яркий акцент, легкая тень */
+input.text:focus {
+  outline: none;
+  border-color: var(--brand-500);
+  box-shadow: 0 6px 18px rgba(38,132,255,0.08);
+  transform: translateY(-1px);
+}
+
+/* Небольшой стиль для disabled */
+input.text[disabled] {
+  background: #f6f8fa;
+  color: #8b9aa2;
+}
+
+/* Подсказки ошибки / успеха */
+.form-help {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #6b7c86;
+}
+
+/* Ошибка */
+.form-error {
+  color: #b00020;
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+/* ---------- Buttons / CTA (логический блок) ---------- */
+/* Группировка кнопок */
+main.container .form-row .aui-button,
+main.container .form-row .aui-button-link {
+  box-shadow: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 10px 16px;
+}
+
+/* Primary — градиент и тень в стиле Atlassian */
+main.container .aui-button-primary {
+  background: linear-gradient(90deg, var(--brand-600), var(--brand-500));
+  color: #fff;
+  border: none;
+  box-shadow: 0 8px 22px rgba(38,132,255,0.12);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+/* hover/focus для primary */
+main.container .aui-button-primary:hover,
+main.container .aui-button-primary:focus {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 34px rgba(38,132,255,0.16);
+}
+
+/* Secondary (link) — мягкий */
+main.container .aui-button-link {
+  color: var(--muted-700);
+  background: transparent;
+  border: none;
+}
+
+/* Кнопка "Зарегистрироваться" — немного шире */
+#btn-register.aui-button-primary {
+  min-width: 180px;
+}
+
+/* Кнопка "Далее" — компактнее */
+#btn-continue.aui-button-primary {
+  min-width: 140px;
+}
+
+/* ---------- Password fields (логический блок) ---------- */
+#step-passwords {
+  margin-top: 8px;
+  border-top: 1px dashed rgba(16,22,26,0.04);
+  padding-top: 14px;
+}
+
+/* password helper (силу пароля можно подключить позже) */
+.password-strength {
+  height: 8px;
+  border-radius: 6px;
+  background: #eef6ff;
+  overflow: hidden;
+  margin-top: 8px;
+}
+.password-strength > i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #ffb86b, #ff6b6b);
+  transition: width 220ms ease;
+}
+
+/* ---------- Accessibility helpers (логический) ---------- */
+[aria-live] { position: relative; }
+
+/* ---------- Responsive tweaks (логический блок) ---------- */
+@media (max-width: 720px) {
+  main.container > section.card {
+    padding: 22px;
+    margin: 16px;
+  }
+  input.text { padding: 10px 12px; font-size: 15px; }
+  .logo-text { display: none; } /* header already hides it on small screens — keeps consistent */
+  #btn-register.aui-button-primary, #btn-continue.aui-button-primary { width: 100%; }
+  .form-row { margin-bottom: 12px; }
+}
+
+/* ---------- Small utility rules to remove inline styling conflicts (логический) ----------
+   Note: we don't change templates; these rules allow templates' inline styles to be overridden
+   in a consistent way on the registration page without touching HTML.
+------------------------------------------------------------------ */
+main.container > section.card [style] {
+  /* keep inline padding/margins minimal, let CSS control spacing */
+  margin: 0 !important;
+  padding: 0 !important;
+}
+main.container > section.card .form-row { margin-bottom: 14px !important; }
+main.container > section.card .form-note { margin-top: 8px !important; margin-bottom: 18px !important; }
+
+
+/* ==== Login page styles (only for login page) ==== */
+
+/* reuse registration styles; tweak spacing for login card specifically */
+main.container > section.card h1 { font-size: 22px; }
+#login-form .form-row { margin-bottom: 14px; }
+#login-form input.text { padding: 12px 14px; border-radius: 8px; border: 1px solid var(--muted-300); }
+#login-form input.text:focus { border-color: var(--brand-500); box-shadow: 0 8px 20px rgba(38,132,255,0.08); transform: translateY(-1px); }
+
+/* readonly credential style */
+#login-credential-readonly {
+  background: #f6f8fa;
+  color: var(--muted-700);
+}
+
+/* messages */
+#credentials-message, #password-message { color: var(--muted-500); }
+
+@media (max-width: 720px) {
+  #btn-login.aui-button-primary, #btn-continue.aui-button-primary { width: 100%; }
+}
+
+/* ==== Login page styles (Atlassian-like) ==== */
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 80px);
+  background: linear-gradient(180deg, #f7fbff 0%, #f6f9fb 100%);
+  padding: 32px 20px;
+}
+
+.auth-card {
+  width: 420px;
+  max-width: 94%;
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px;
+  box-shadow: 0 18px 50px rgba(12,22,32,0.08);
+  border: 1px solid rgba(16,22,26,0.04);
+  text-align: left;
+}
+
+.auth-top { text-align: center; margin-bottom: 14px; }
+.brand-mark { display:inline-block; margin-bottom:12px; }
+.auth-title { font-size:22px; margin:0; color: #0b2940; font-weight:700; }
+.auth-sub { margin:8px 0 0; color:#425563; font-size:13px; }
+
+/* reuse input styles defined earlier but ensure specificity */
+.auth-card .form-row { margin-bottom:14px; }
+.auth-card label { font-weight:600; font-size:13px; color:#0b2940; margin-bottom:8px; display:block; }
+.auth-card input.text {
+  padding:12px 14px; border-radius:10px; border:1px solid #dfe6ea;
+  background: linear-gradient(180deg,#fff,#fbfdff);
+  transition: box-shadow 160ms cubic-bezier(.2,.9,.2,1), border-color 160ms;
+  font-size:15px;
+}
+.auth-card input.text:focus { border-color: #2684FF; box-shadow: 0 10px 30px rgba(38,132,255,0.08); outline:none; transform: translateY(-1px); }
+
+.auth-card .actions-row { display:flex; gap:10px; align-items:center; justify-content:flex-start; margin-top:6px; }
+.auth-card .aui-button-primary { min-width:150px; border-radius:8px; font-weight:700; padding:10px 16px; }
+.auth-card .aui-button-link { color:#425563; }
+
+/* disabled / locked identifier field */
+#login-identifier-locked { background:#f6f8fa; color:#6b7c86; }
+
+/* messages */
+.auth-card .form-note { color:#6b7c86; font-size:13px; }
+.auth-card .form-error { color:#b00020; font-size:13px; }
+
+/* responsive */
+@media (max-width: 480px) {
+  .auth-card { width: 100%; padding: 20px; border-radius: 10px; }
+  .auth-card .actions-row { flex-direction: column; align-items: stretch; }
+  .auth-card .aui-button-primary { width:100%; }
+}
+
+/* ==== Login page styles (Atlassian-like) ==== */
+
+.login-page { background: linear-gradient(180deg,#f6f9fb 0%, #eef6fb 100%); }
+
+/* card size + inner padding are in template, add small refinements */
+.login-card .login-card-inner input.text {
+  border-radius: 8px;
+  padding: 12px;
+  border: 1px solid var(--muted-300);
+}
+
+/* messages */
+#login-message, #login-password-message { color: #6b7c86; font-size:13px; }
+
+/* primary button adjustments (consistent with register) */
+.login-card .aui-button-primary {
+  min-width: 140px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight:700;
+}
+
+/* small responsive tweak */
+@media (max-width:480px) {
+  .login-card { width: 92% !important; }
+  .login-card .aui-button-primary { width: 100%; }
+}
+
+/* ============================
+   Login page styles (Atlassian-like)
+   Logical blocks: background, layout, card, brand, form controls, footer, responsive
+   ============================ */
+
+:root {
+  --login-bg-1: linear-gradient(180deg,#e6f0ff 0%, #f6fbff 40%, #ffffff 100%);
+}
+
+/* Page / background */
+.login-page {
+  min-height: calc(100vh - 0px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--login-bg-1);
+  padding: 48px 20px;
+}
+
+/* Wrap to center and push form slightly higher (как id.atlassian.com) */
+.login-wrap {
+  width: 100%;
+  max-width: 980px;
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 32px;
+  align-items: start;
+  /* поднять форму выше центра */
+  align-self: start;
+  margin-top: 36px;
+}
+
+/* Brand area (left column) */
+.login-brand {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:18px;
+}
+.logo { display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; }
+.logo-mark { width:48px; height:48px; display:inline-flex; }
+.logo-text { font-weight:700; font-size:18px; color:#0b2940; }
+
+/* Card (form) similar to Atlassian: light, rounded, elevated */
+.login-card {
+  grid-column: 2 / 3;
+  background: #fff;
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: 0 18px 40px rgba(18,28,36,0.08);
+  border: 1px solid rgba(16,22,26,0.04);
+  max-width: 440px;
+}
+
+/* Заголовок карточки и подзаголовок */
+.login-card h1 { margin:0 0 6px 0; font-size:20px; color:#0b2940; }
+.login-sub { margin:0 0 18px 0; color:#425563; font-size:14px; }
+
+/* form controls — переиспользуем ранее заданные input.text, но усилим */
+.login-card label { display:block; margin-bottom:8px; font-weight:600; color:#2b4450; }
+.login-card input.text {
+  width:100%;
+  padding:12px 14px;
+  border-radius:8px;
+  border:1px solid #e1e9ee;
+  background: #fff;
+  font-size:15px;
+  box-shadow:none;
+  transition: box-shadow .16s ease, border-color .16s ease, transform .12s;
+}
+.login-card input.text::placeholder { color:#9aa7b1; }
+.login-card input.text:focus {
+  outline:none;
+  border-color: #2684FF;
+  box-shadow: 0 8px 26px rgba(38,132,255,0.08);
+  transform: translateY(-1px);
+}
+
+/* helper text and messages */
+.form-note { color:#6b7c86; font-size:13px; margin-top:8px; }
+.form-error { color:#bf3b3b; }
+
+/* buttons in card */
+.login-card .aui-button {
+  border-radius: 8px;
+  font-weight:700;
+}
+.login-card .aui-button-primary {
+  background: linear-gradient(90deg,#0052CC,#2684FF);
+  color:#fff;
+  border:none;
+  box-shadow: 0 10px 30px rgba(38,132,255,0.12);
+}
+
+/* footer (signup link) */
+.login-footer { margin-top:20px; color:#425563; }
+.login-footer a { color:#0052CC; text-decoration:none; font-weight:600; }
+
+/* Responsive: stack columns on small screens, move brand above card */
+@media (max-width: 900px) {
+  .login-wrap {
+    grid-template-columns: 1fr;
+    gap:12px;
+    margin-top: 8px;
+  }
+  .login-card { grid-column: 1; max-width: 100%; }
+  .login-brand { order: -1; padding-left: 8px; }
+}
+
+
+/* ===========================
+   Login page styles (Atlassian-like)
+   Logical blocks: layout / card / fields / buttons / footer
+   =========================== */
+
+.auth-page { background: linear-gradient(180deg,#f5f8fb 0%, #f6fafc 100%); min-height: calc(100vh - 72px); display: flex; align-items: flex-start; padding-top: 40px; padding-bottom: 60px; }
+
+/* shell centers the card and allows moving card slightly up */
+.auth-shell { display:flex; align-items:flex-start; justify-content:center; padding: 16px; }
+
+/* card */
+.auth-card {
+  width: 520px;
+  border-radius: 12px;
+  background: #fff;
+  padding: 28px;
+  box-shadow: 0 18px 46px rgba(18,28,36,0.08);
+  border: 1px solid rgba(16,22,26,0.04);
+}
+
+/* brand on top */
+.auth-brand { display:flex; align-items:center; gap:12px; margin-bottom: 10px; }
+.logo-mark { width:36px; height:36px; display:inline-flex; border-radius:8px; overflow:hidden; }
+.logo-text { font-weight:700; color:#0b2940; font-size:16px; }
+
+/* headline */
+.auth-body h1 { margin: 4px 0 8px 0; color: #0b2940; font-size:20px; font-weight:700; }
+.auth-desc { color: #425563; margin-bottom: 18px; font-size:13px; }
+
+/* form blocks */
+.form-block { margin-bottom: 12px; }
+.field-label { display:block; font-weight:600; margin-bottom:8px; color:#0b2940; font-size:13px; }
+
+/* input base (align with registration inputs) */
+input.text { width:100%; padding:12px 14px; border-radius:8px; border:1px solid #dfe6ea; background:linear-gradient(180deg,#fff,#fbfdff); font-size:15px; color:#102b3a; transition: box-shadow .15s, border-color .15s, transform .12s; }
+input.text::placeholder { color:#9aa7b1; }
+
+/* readonly style */
+input.text.readonly, input.text[readonly] { background:#fbfdff; color:#566b75; border-color: #e6eef6; }
+
+/* focus */
+input.text:focus { outline:none; border-color:#2684FF; box-shadow: 0 8px 20px rgba(38,132,255,0.08); transform: translateY(-1px); }
+
+/* help text */
+.form-help { margin-top:8px; color:#6b7c86; font-size:13px; }
+
+/* form actions */
+.form-actions { display:flex; gap:10px; align-items:center; margin-top:8px; }
+.aui-button.aui-button-primary { background: linear-gradient(90deg,#0052CC,#2684FF); color:#fff; border:none; box-shadow: 0 10px 30px rgba(38,132,255,0.12); padding:10px 16px; border-radius:8px; font-weight:700; }
+.aui-button.aui-button-link { color:#0b2940; background:transparent; border:none; }
+
+/* footer note */
+.auth-footer { margin-top:18px; text-align:center; }
+.auth-footer-note { color:#6b7c86; font-size:13px; }
+
+/* responsive */
+@media (max-width:600px) {
+  .auth-card { width:100%; padding:20px; margin: 8px; border-radius:10px; }
+  .auth-page { padding-top:20px; }
+  .logo-text { display:none; }
+  .aui-button.aui-button-primary { width:100%; }
+}
+
+/* small utility to slightly lift the card (looks like Atlassian) */
+.auth-card:hover { transform: translateY(-3px); transition: transform .18s; }
+
+/* =========================
+   Company owner profile (only styles below)
+   Logical blocks: sidebar cards, lists, modals
+   ========================= */
+
+.card { background:#fff; border-radius:10px; border:1px solid rgba(16,22,26,0.04); box-shadow: 0 8px 30px rgba(18,28,36,0.04); padding:12px; margin-bottom:12px; }
+#sites-list > div, #partners-list > div, #clients-list > div { padding:8px 0; border-bottom:1px dashed rgba(16,22,26,0.03); }
+#sites-list > div:last-child, #partners-list > div:last-child, #clients-list > div:last-child { border-bottom: none; }
+
+/* modal overlay (rudimentary) */
+#modal-site, #modal-password {
+  position: fixed;
+  left: 0; top: 0; right: 0; bottom: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6,12,20,0.36);
+  z-index: 200;
+}
+#modal-site > div, #modal-password > div { box-shadow: 0 18px 46px rgba(18,28,36,0.12); }
+
+/* simple textarea and inputs styling */
+textarea.text { width:100%; padding:12px; border-radius:8px; border:1px solid #dfe6ea; min-height:90px; resize:vertical; }
+
+/* slightly tighter layout for sidebar */
+aside .card h3, section .card h3 { margin:0 0 12px 0; font-size:16px; color:#0b2940; }
+
+/* ===========================
+   Company owner page styles (only profile area)
+   =========================== */
+
+.profile-topbar { background: linear-gradient(180deg,#ffffff 0%, #f8fbff 100%); border-bottom:1px solid rgba(16,22,26,0.04); box-shadow: 0 6px 18px rgba(18,28,36,0.03); position: sticky; top: 0; z-index:50; }
+
+.profile-page .profile-sidebar { background: transparent; }
+.profile-page .side-btn { width:100%; text-align:left; padding:10px 12px; background:transparent; border:none; border-radius:8px; font-weight:600; color:#0b2940; cursor:pointer; }
+.profile-page .side-btn:hover { background: rgba(38,132,255,0.04); transform: translateY(-1px); }
+
+.profile-content h2 { margin-top:0; color:#0b2940; }
+.profile-content .text { padding:10px 12px; border-radius:8px; border:1px solid #dfe6ea; width:100%; box-sizing:border-box; margin-bottom:10px; }
+
+
+/* ===========================
+   Company owner page styles (only profile area)
+   =========================== */
+
+.profile-topbar { background: linear-gradient(180deg,#ffffff 0%, #f8fbff 100%); border-bottom:1px solid rgba(16,22,26,0.04); box-shadow: 0 6px 18px rgba(18,28,36,0.03); position: sticky; top: 0; z-index:50; }
+
+.profile-page .profile-sidebar { background: transparent; }
+.profile-page .side-btn { width:100%; text-align:left; padding:10px 12px; background:transparent; border:none; border-radius:8px; font-weight:600; color:#0b2940; cursor:pointer; }
+.profile-page .side-btn:hover { background: rgba(38,132,255,0.04); transform: translateY(-1px); }
+
+.profile-content h2 { margin-top:0; color:#0b2940; }
+.profile-content .text { padding:10px 12px; border-radius:8px; border:1px solid #dfe6ea; width:100%; box-sizing:border-box; margin-bottom:10px; }
+

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <%- include('partials/head') %>
+  <link rel="stylesheet" href="/public/css/app.css">
+</head>
+<body>
+  <!-- Page-specific topbar: main icon left, user icon right -->
+  <header class="profile-topbar" role="banner">
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;padding:10px 20px;">
+      <a href="/" class="brand-inline" aria-label="ReferralMVP Home">
+        <span class="logo-mark" aria-hidden="true" style="vertical-align:middle;">
+          <!-- svg small -->
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
+            <defs><linearGradient id="lg3" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#0052CC"/><stop offset="100%" stop-color="#2684FF"/></linearGradient></defs>
+            <rect rx="6" width="28" height="28" fill="url(#lg3)"></rect>
+            <text x="50%" y="54%" text-anchor="middle" fill="#fff" font-family="Segoe UI, Roboto, Arial" font-size="14" font-weight="700">R</text>
+          </svg>
+        </span>
+        <span class="brand-title" style="margin-left:10px;font-weight:700;color:#0b2940;">ReferralMVP</span>
+      </a>
+
+      <div class="profile-actions" style="display:flex;align-items:center;gap:12px;">
+        <div class="user-avatar" title="Профиль">
+          <!-- simple user icon -->
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="3.2" fill="#2684FF"/><path d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6" stroke="#18537A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container profile-page" style="display:flex; gap:24px; padding:28px 20px;">
+    <!-- Left sidebar -->
+    <nav class="profile-sidebar" style="width:260px;">
+      <ul style="list-style:none;padding:0;margin:0;">
+        <li><button class="side-btn" data-section="profile">Профиль</button></li>
+        <li><button class="side-btn" data-section="sites">Сайты</button></li>
+        <li><button class="side-btn" data-section="partners">Партнёры</button></li>
+        <li><button class="side-btn" data-section="clients">Клиенты</button></li>
+      </ul>
+    </nav>
+
+    <!-- Right content area -->
+    <section class="profile-content" style="flex:1;">
+      <!-- Profile section -->
+      <div id="section-profile" class="section" style="display:block;">
+        <h2>Профиль</h2>
+        <div id="profile-details"></div>
+        <div style="margin-top:12px;">
+          <h3>Изменить пароль</h3>
+          <input id="change-old" type="password" placeholder="Старый пароль" class="text" style="margin-bottom:8px;" />
+          <input id="change-new" type="password" placeholder="Новый пароль" class="text" style="margin-bottom:8px;" />
+          <button id="btn-change-pass" class="aui-button aui-button-primary">Сменить пароль</button>
+          <div id="profile-msg" class="form-help" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <!-- Sites section -->
+      <div id="section-sites" class="section" style="display:none;">
+        <h2>Сайты</h2>
+        <div style="margin-bottom:12px;">
+          <button id="btn-add-site" class="aui-button aui-button-primary">Добавить сайт</button>
+        </div>
+        <div id="sites-list"></div>
+
+        <!-- Site form (create/edit) -->
+        <div id="site-form" style="display:none; margin-top:12px; border-top:1px dashed rgba(16,22,26,0.04); padding-top:12px;">
+          <h3 id="site-form-title">Новый сайт</h3>
+          <label>Название</label>
+          <input id="site-name" class="text" />
+          <label>Описание (продающий текст)</label>
+          <textarea id="site-desc" class="text" style="height:90px"></textarea>
+          <div style="margin-top:8px;">
+            <button id="btn-save-site" class="aui-button aui-button-primary">Сохранить</button>
+            <button id="btn-cancel-site" class="aui-button aui-button-link">Отмена</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Partners section -->
+      <div id="section-partners" class="section" style="display:none;">
+        <h2>Партнёры</h2>
+        <div id="partners-list"></div>
+      </div>
+
+      <!-- Clients section -->
+      <div id="section-clients" class="section" style="display:none;">
+        <h2>Клиенты</h2>
+        <div id="clients-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/public/js/company-owner.js" defer></script>
+</body>
+</html>

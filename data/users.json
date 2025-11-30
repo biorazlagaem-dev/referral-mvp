@@ -8,6 +8,50 @@
       "status": "active",
       "createdAt": "2025-11-18T20:07:44.444Z",
       "source": "self_register"
+    },
+    {
+      "id": "user_1763829208557",
+      "email": "test2@test.com",
+      "password": "12345678",
+      "status": "active",
+      "createdAt": "2025-11-22T16:33:28.557Z",
+      "source": "self_register"
+    },
+    {
+      "id": "user_1763873714225",
+      "email": "test123@test.com",
+      "status": "pending",
+      "createdAt": "2025-11-23T04:55:14.225Z",
+      "source": "login_check"
+    },
+    {
+      "id": "user_1763874270532",
+      "email": "test24@test.com",
+      "phone": "test24@test.com",
+      "status": "pending",
+      "createdAt": "2025-11-23T05:04:30.532Z",
+      "source": "login_flow"
+    },
+    {
+      "id": "user_1763875260322",
+      "email": "test1234@test.com",
+      "status": "pending",
+      "createdAt": "2025-11-23T05:21:00.322Z",
+      "source": "login_request"
+    },
+    {
+      "id": "user_1763876159883",
+      "email": "test01@test.com",
+      "status": "pending",
+      "createdAt": "2025-11-23T05:35:59.883Z",
+      "source": "login_request"
+    },
+    {
+      "id": "user_1763876207362",
+      "email": "test1@test.com",
+      "status": "pending",
+      "createdAt": "2025-11-23T05:36:47.362Z",
+      "source": "login_request"
     }
   ]
 }
